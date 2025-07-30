@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
 
-
 const Guestbook = () => {
   const [formData, setFormData] = useState({
     Name: "",
@@ -13,7 +12,6 @@ const Guestbook = () => {
   const [notes, setNotes] = useState([]);
   const [showNotes, setShowNotes] = useState(false);
 
-  
   useEffect(() => {
     fetch("https://localhost:7149/api/user/users")
       .then((res) => {
@@ -23,14 +21,16 @@ const Guestbook = () => {
         return res.json();
       })
       .then((data) => {
-        
-        const formattedNotes = data.map(user => ({
-          id: user.id,
-          username: user.name,
-          surname: user.surName,
-          note: user.note,
-          dateTime: user.dateTime 
-        }));
+        const formattedNotes = data.flatMap(user =>
+          user.notes.map(note => ({
+            id: note.userId,             // unique id olarak userId kullandık
+            username: user.name,
+            surname: user.surName,
+            mail: user.mail,
+            note: note.text,
+            dateTime: user.dateTime
+          }))
+        );
         setNotes(formattedNotes);
       })
       .catch((err) => console.error("Error fetching notes:", err));
@@ -48,10 +48,14 @@ const Guestbook = () => {
     e.preventDefault();
 
     const newUser = {
-      Name: formData.Name,
-      SurName: formData.SurName,
-      Mail: formData.Mail,
-      Note: formData.Note,
+      name: formData.Name,
+      surName: formData.SurName,
+      mail: formData.Mail,
+      notes: [
+        {
+          text: formData.Note
+        }
+      ]
     };
 
     fetch("https://localhost:7149/api/user/user", {
@@ -66,17 +70,18 @@ const Guestbook = () => {
         return res.json();
       })
       .then((savedUser) => {
-      
-        setNotes((prev) => [
-          ...prev,
-          {
-            id: savedUser.id,
-            username: savedUser.name,
-            surname: savedUser.surName,
-            note: savedUser.note,
-            dateTime: savedUser.dateTime, 
-          },
-        ]);
+       
+        const newNotes = savedUser.notes.map(note => ({
+          id: note.userId,
+          username: savedUser.name,
+          surname: savedUser.surName,
+          mail: savedUser.mail,
+          note: note.text,
+          dateTime: savedUser.dateTime
+        }));
+
+        setNotes((prev) => [...prev, ...newNotes]);
+
         setFormData({
           Name: "",
           SurName: "",
@@ -227,6 +232,7 @@ const Guestbook = () => {
         <div className="form-actions">
           <input type="submit" value="Submit" />
           <button
+            type="button"
             className="toggle-notes-btn"
             onClick={() => setShowNotes(!showNotes)}
             disabled={notes.length === 0}
@@ -241,15 +247,14 @@ const Guestbook = () => {
           <h3>Notes</h3>
           {notes.map((n) => (
             <div key={n.id} className="note-item">
-              <div className="note-header"> {}
+              <div className="note-header">
                 <div className="note-author">
                   {n.username} {n.surname}
                 </div>
-                {n.dateTime && ( 
+                {n.dateTime && (
                   <div className="note-date">
-                    {new Date(n.dateTime).toLocaleDateString()} {}
-                    {" "}
-                    {new Date(n.dateTime).toLocaleTimeString()} {}
+                    {new Date(n.dateTime).toLocaleDateString()}{" "}
+                    {new Date(n.dateTime).toLocaleTimeString()}
                   </div>
                 )}
               </div>
