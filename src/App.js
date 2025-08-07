@@ -167,8 +167,8 @@ const Guestbook = () => {
         
         const userData = {
           id: parseInt(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]),
-          name: decodedToken.name || "Kullanıcı",
-          surName: decodedToken.surName || "",
+          name: decodedToken.name || decodedToken.Name || "",
+          surName: decodedToken.Id || loginData.SurName || "",
           mail: decodedToken.email || loginData.Mail,
           role: decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User"
         };
@@ -358,7 +358,13 @@ const Guestbook = () => {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         setCurrentUser(updatedUser);
       } else {
-        const errorText = await response.text();
+        let errorText;
+        try {
+          const errorData = await response.json();
+          errorText = errorData.detail || JSON.stringify(errorData);
+        } catch {
+          errorText = await response.text();
+        }
         setError(errorText || "Kullanıcı güncellenemedi!");
       }
     } catch (err) {

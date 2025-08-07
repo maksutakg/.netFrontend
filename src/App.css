@@ -113,8 +113,6 @@ body {
   cursor: not-allowed;
 }
 
-
-
 .facebook-divider {
   height: 1px;
   background: #dadde1;
@@ -264,7 +262,7 @@ body {
 }
 
 .btn-logout {
-  background: #cd0404;
+  background: #bb0909;
   color: white;
   width: 100%;
   font-size: 17px;
@@ -277,7 +275,7 @@ body {
 }
 
 .btn-save {
-  background: #00b04f;
+  background: #215677;
   color: white;
   flex: 1;
   margin-right: 8px;
@@ -291,7 +289,7 @@ body {
 }
 
 .btn-cancel {
-  background: #cd0404;
+  background: #bb0909;
   color: white;
   flex: 1;
   padding: 12px;
@@ -304,7 +302,7 @@ body {
 }
 
 .btn-edit-small {
-  background: #035dd2;
+  background: #215677;
   color: white;
   padding: 8px 16px;
   font-size: 14px;
