@@ -1,0 +1,806 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+/* Facebook Login Styles */
+.facebook-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #f0f2f5;
+}
+
+.facebook-login-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1000px;
+  width: 100%;
+  gap: 40px;
+}
+
+.facebook-left-section {
+  flex: 1;
+  max-width: 500px;
+}
+
+.facebook-logo h1 {
+  color: #215677;
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+.facebook-description {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #1c1e21;
+  margin-top: 20px;
+}
+
+.facebook-right-section {
+  flex: 1;
+  max-width: 400px;
+}
+
+.facebook-login-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.facebook-form {
+  margin-bottom: 20px;
+}
+
+.facebook-form .form-group {
+  margin-bottom: 12px;
+}
+
+.facebook-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  font-size: 17px;
+  transition: border-color 0.3s ease;
+  background: #ffffff;
+}
+
+.facebook-form input:focus {
+  outline: none;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.facebook-form input.error {
+  border-color: #e53e3e;
+}
+
+.facebook-login-btn {
+  width: 100%;
+  background: #215677;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 16px;
+}
+
+
+
+.facebook-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.facebook-forgot-password {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.facebook-forgot-password a {
+  color: #1877f2;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.facebook-forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.facebook-divider {
+  height: 1px;
+  background: #dadde1;
+  margin: 20px 0;
+}
+
+.facebook-create-account-btn {
+  width: 100%;
+  background: #215677;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.facebook-create-account-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design for Facebook Login */
+@media (max-width: 900px) {
+  .facebook-login-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .facebook-left-section {
+    max-width: 100%;
+  }
+
+  .facebook-logo h1 {
+    font-size: 3rem;
+  }
+
+  .facebook-description {
+    font-size: 1.25rem;
+  }
+
+  .facebook-right-section {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .facebook-login-container {
+    padding: 10px;
+  }
+
+  .facebook-logo h1 {
+    font-size: 2.5rem;
+  }
+
+  .facebook-description {
+    font-size: 1.1rem;
+  }
+
+  .facebook-login-form {
+    padding: 16px;
+  }
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1c1e21;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #215677;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: #e53e3e;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Button Styles */
+.btn-edit:hover:not(:disabled),
+.btn-logout:hover:not(:disabled),
+.btn-save:hover:not(:disabled),
+.btn-cancel:hover:not(:disabled),
+.btn-edit-small:hover:not(:disabled),
+.btn-delete-small:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-edit:disabled,
+.btn-logout:disabled,
+.btn-save:disabled,
+.btn-cancel:disabled,
+.btn-edit-small:disabled,
+.btn-delete-small:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-edit {
+  background: #215677;
+  color: white;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-logout {
+  background: #cd0404;
+  color: white;
+  width: 100%;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-save {
+  background: #00b04f;
+  color: white;
+  flex: 1;
+  margin-right: 8px;
+  padding: 12px;
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-cancel {
+  background: #cd0404;
+  color: white;
+  flex: 1;
+  padding: 12px;
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit-small {
+  background: #035dd2;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 8px;
+}
+
+.btn-delete-small {
+  background: #e80303;
+  color: white;
+  padding: 8px 16px;  
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Error Messages */
+.error-message {
+  color: #e53e3e;
+  background: rgba(229, 62, 62, 0.1);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* Main Layout */
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #f0f2f5;
+}
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.page-header h1 {
+  color: #215677;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.page-header p {
+  font-size: 1.2rem;
+  color: #1c1e21;
+  margin: 0;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 320px;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.user-info {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.user-info h3 {
+  color: #215677;
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.user-email {
+  color: #718096;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+/* Edit Form */
+.edit-form {
+  margin-bottom: 20px;
+}
+
+.edit-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+
+.edit-form input:focus {
+  outline: none;
+  border-color: #215677;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+/* Content Area */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 800px;
+}
+
+/* Note Form Card */
+.note-form-card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.note-form-card h2 {
+  color: #215677;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.form-buttons .facebook-login-btn,
+.form-buttons .facebook-create-account-btn {
+  width: auto;
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Notes Card */
+.notes-card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.notes-header h3 {
+  color: #215677;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-input {
+  padding: 14px 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  font-size: 17px;
+  min-width: 200px;
+  transition: all 0.3s ease;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+/* Note Items */
+.note-item {
+  background: #f8f9fa;
+  border: 1px solid #dddfe2;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.note-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #1877f2;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.note-info {
+  flex: 1;
+}
+
+.note-author {
+  font-weight: 600;
+  color:  #000000;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.note-location {
+  font-size: 18px;
+  color: #199999;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.note-date {
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.note-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.note-content {
+  color: #1c1e21;
+  line-height: 1.6;
+  font-size: 15px;
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #dddfe2;
+}
+
+/* Edit Note Form */
+.edit-note-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #dddfe2;
+}
+
+.edit-note-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  resize: vertical;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.edit-note-form textarea:focus {
+  outline: none;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+/* No Notes Message */
+.no-notes {
+  text-align: center;
+  color: #718096;
+  font-style: italic;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main-container {
+    padding: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .page-header p {
+    font-size: 1.1rem;
+  }
+
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 500px;
+    position: static;
+  }
+
+  .content {
+    max-width: 100%;
+  }
+
+  .notes-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-input {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 10px;
+  }
+
+  .page-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .sidebar {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .note-form-card,
+  .notes-card {
+    padding: 20px;
+  }
+
+  .note-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .note-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .edit-buttons {
+    flex-direction: column;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 10px;
+  }
+
+  .page-header {
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-header p {
+    font-size: 0.9rem;
+  }
+
+  .main-content {
+    align-items: stretch;
+  }
+
+  .sidebar {
+    padding: 15px;
+  }
+
+  .note-form-card,
+  .notes-card {
+    padding: 15px;
+  }
+
+  .note-item {
+    padding: 15px;
+  }
+}
+
+/* Loading Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.7);
+}
