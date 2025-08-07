@@ -166,7 +166,7 @@ const Guestbook = () => {
         const decodedToken = parseJwt(cleanToken);
         
         const userData = {
-          id: parseInt(decodedToken.sub) || 1,
+          id: parseInt(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]),
           name: decodedToken.name || "Kullanıcı",
           surName: decodedToken.surName || "",
           mail: decodedToken.email || loginData.Mail,
@@ -273,15 +273,14 @@ const Guestbook = () => {
 
     try {
       const headers = getAuthHeaders();
-      // Backend parametre olarak bekliyor, query string kullanıyoruz
-      const params = new URLSearchParams({
-        NoteId: editNoteId.toString(),
-        text: editNoteText.trim()
-      }).toString();
-
-      const response = await fetch(`${API_BASE}/api/Note/UpdateNote?${params}`, {
+      // Backend bir body bekliyor: UpdateNoteRequest
+      const response = await fetch(`${API_BASE}/api/Note/UpdateNote`, {
         method: "PUT",
-        headers: headers
+        headers: headers,
+        body: JSON.stringify({
+          noteId: editNoteId,
+          text: editNoteText.trim()
+        })
       });
 
       if (response.ok) {
@@ -437,11 +436,7 @@ const Guestbook = () => {
                       {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
                     </button>
                   </form>
-                  <div className="facebook-forgot-password">
-                    <a href="#" onClick={(e) => { e.preventDefault(); setError("Şifre sıfırlama özelliği yakında eklenecek."); }}>
-                      Şifreni mi Unuttun?
-                    </a>
-                  </div>
+                 
                   <div className="facebook-divider"></div>
                   <button 
                     onClick={() => { setShowRegister(true); setError(""); }}
@@ -651,67 +646,70 @@ const Guestbook = () => {
             </div>
             
             {filteredNotes.length > 0 ? (
-              filteredNotes.map((note) => (
-                <div key={note.id} className="note-item">
-                  <div className="note-header">
-                    <div className="note-info">
-                      <div className="note-author">
-                        {note.username} {note.surName} ({note.mail})
+              filteredNotes.map((note) => {
+                const noteUserId = Number(note.userId);
+                const currentUserId = Number(currentUser?.id);
+                console.log('currentUser.id:', currentUserId, 'note.userId:', noteUserId, 'eşit mi:', noteUserId === currentUserId);
+                return (
+                  <div key={note.id} className="note-item">
+                    <div className="note-header">
+                      <div className="note-info">
+                        <div className="note-author">
+                          {note.username} {note.surName} ({note.mail})
+                        </div>
+                        <div className="note-location">
+                          📍 {getMahalleName(note.mahalleId)}
+                        </div>
+                        {note.dateTime && (
+                          <div className="note-date">
+                            {new Date(note.dateTime).toLocaleDateString('tr-TR')} - {new Date(note.dateTime).toLocaleTimeString('tr-TR')}
+                          </div>
+                        )}
                       </div>
-                      <div className="note-location">
-                        📍 {getMahalleName(note.mahalleId)}
-                      </div>
-                      {note.dateTime && (
-                        <div className="note-date">
-                          {new Date(note.dateTime).toLocaleDateString('tr-TR')} - {new Date(note.dateTime).toLocaleTimeString('tr-TR')}
+                      {noteUserId === currentUserId && (
+                        <div className="note-actions">
+                          <button
+                            onClick={() => {
+                              setEditNoteId(note.id);
+                              setEditNoteText(note.note);
+                            }}
+                            className="btn-edit-small"
+                          >
+                            Düzenle
+                          </button>
+                          <button
+                            onClick={() => handleDeleteNote(note.id)}
+                            className="btn-delete-small"
+                          >
+                            Sil
+                          </button>
                         </div>
                       )}
                     </div>
-                    {note.userId === currentUser?.id && (
-                      <div className="note-actions">
-                        <button
-                          onClick={() => {
-                            setEditNoteId(note.id);
-                            setEditNoteText(note.note);
-                          }}
-                          className="btn-edit-small"
-                        >
-                          Düzenle
-                        </button>
-                        <button
-                          onClick={() => handleDeleteNote(note.id)}
-                          className="btn-delete-small"
-                        >
-                          Sil
-                        </button>
-                      </div>
+                    <div className="note-content">
+                      {note.note}
+                    </div>
+                    {editNoteId === note.id && (
+                      <form onSubmit={handleEditNoteSubmit} className="edit-note-form">
+                        <textarea
+                          value={editNoteText}
+                          onChange={(e) => setEditNoteText(e.target.value)}
+                          rows="3"
+                          disabled={loading}
+                        />
+                        <div className="edit-buttons">
+                          <button type="submit" disabled={loading} className="btn-save">
+                            {loading ? "Güncelleniyor..." : "Kaydet"}
+                          </button>
+                          <button type="button" onClick={() => setEditNoteId(null)} className="btn-cancel">
+                            İptal
+                          </button>
+                        </div>
+                      </form>
                     )}
                   </div>
-                  
-                  <div className="note-content">
-                    {note.note}
-                  </div>
-                  
-                  {editNoteId === note.id && (
-                    <form onSubmit={handleEditNoteSubmit} className="edit-note-form">
-                      <textarea
-                        value={editNoteText}
-                        onChange={(e) => setEditNoteText(e.target.value)}
-                        rows="3"
-                        disabled={loading}
-                      />
-                      <div className="edit-buttons">
-                        <button type="submit" disabled={loading} className="btn-save">
-                          {loading ? "Güncelleniyor..." : "Kaydet"}
-                        </button>
-                        <button type="button" onClick={() => setEditNoteId(null)} className="btn-cancel">
-                          İptal
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="no-notes">Henüz not bulunmuyor.</p>
             )}
