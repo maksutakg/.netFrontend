@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from "react";
-import "./App.css"; 
+import "./App.css";
 
 const Guestbook = () => {
   // --- Ana State'ler ---
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
-  
+
   // --- Form State'leri ---
   const [loginData, setLoginData] = useState({ Mail: "", Password: "" });
   const [registerData, setRegisterData] = useState({ Name: "", SurName: "", Mail: "", Password: "" });
   const [formData, setFormData] = useState({ text: "", MahalleId: null });
-  
+
   // --- Data State'leri ---
   const [notes, setNotes] = useState([]);
   const [mahalleler, setMahalleler] = useState([]);
   const [showNotes, setShowNotes] = useState(false);
   const [mahalleFilter, setMahalleFilter] = useState("");
-  
+
   // --- Edit State'leri ---
   const [editNoteId, setEditNoteId] = useState(null);
   const [editNoteText, setEditNoteText] = useState("");
   const [showUserEdit, setShowUserEdit] = useState(false);
   const [userEditData, setUserEditData] = useState({ Id: null, Name: "", SurName: "", Mail: "", Password: "" });
-  
+
   // --- Loading ve Error State'leri ---
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_BASE = "https://localhost:7149";
+  const API_BASE = process.env.REACT_APP_API_URL;
 
   // --- Yardımcı Fonksiyonlar ---
   const getMahalleName = (mahalleId) => {
@@ -40,7 +40,7 @@ const Guestbook = () => {
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       return JSON.parse(jsonPayload);
@@ -89,7 +89,7 @@ const Guestbook = () => {
         method: 'GET',
         headers: headers
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setMahalleler(data);
@@ -107,7 +107,7 @@ const Guestbook = () => {
     try {
       setError("");
       const headers = getAuthHeaders();
-      
+
       // Önce tüm kullanıcıları al
       const usersResponse = await fetch(`${API_BASE}/api/user/users`, {
         method: 'GET',
@@ -164,7 +164,7 @@ const Guestbook = () => {
         const token = await response.text();
         const cleanToken = token.replace(/"/g, '');
         const decodedToken = parseJwt(cleanToken);
-        
+
         const userData = {
           id: parseInt(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]),
           name: decodedToken.name || decodedToken.Name || "",
@@ -302,7 +302,7 @@ const Guestbook = () => {
   // --- Not Sil ---
   const handleDeleteNote = async (noteId) => {
     if (!window.confirm("Bu notu silmek istediğinize emin misiniz?")) return;
-    
+
     setLoading(true);
     try {
       const headers = getAuthHeaders();
@@ -442,9 +442,9 @@ const Guestbook = () => {
                       {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
                     </button>
                   </form>
-                 
+
                   <div className="facebook-divider"></div>
-                  <button 
+                  <button
                     onClick={() => { setShowRegister(true); setError(""); }}
                     className="facebook-create-account-btn"
                   >
@@ -500,7 +500,7 @@ const Guestbook = () => {
                     </button>
                   </form>
                   <div className="facebook-divider"></div>
-                  <button 
+                  <button
                     onClick={() => { setShowRegister(false); setError(""); }}
                     className="facebook-create-account-btn"
                   >
@@ -523,204 +523,204 @@ const Guestbook = () => {
       </div>
       <div className="main-content">
         <div className="sidebar">
-        <div className="user-info">
-          <h3>Hoş Geldiniz!</h3>
-          <p className="user-name">{currentUser?.name} {currentUser?.surName}</p>
-          <p className="user-email">{currentUser?.mail}</p>
-        </div>
-        
-        <button onClick={() => {
-          setUserEditData({
-            Id: currentUser.id,
-            Name: currentUser.name,
-            SurName: currentUser.surName,
-            Mail: currentUser.mail,
-            Password: ""
-          });
-          setShowUserEdit(true);
-        }} className="btn-edit">
-          Profilimi Düzenle
-        </button>
+          <div className="user-info">
+            <h3>Hoş Geldiniz!</h3>
+            <p className="user-name">{currentUser?.name} {currentUser?.surName}</p>
+            <p className="user-email">{currentUser?.mail}</p>
+          </div>
 
-        {showUserEdit && (
-          <form onSubmit={handleUserEditSubmit} className="edit-form">
-            <input
-              type="text"
-              value={userEditData.Name}
-              onChange={(e) => setUserEditData(prev => ({ ...prev, Name: e.target.value }))}
-              placeholder="Ad"
-              disabled={loading}
-            />
-            <input
-              type="text"
-              value={userEditData.SurName}
-              onChange={(e) => setUserEditData(prev => ({ ...prev, SurName: e.target.value }))}
-              placeholder="Soyad"
-              disabled={loading}
-            />
-            <input
-              type="email"
-              value={userEditData.Mail}
-              onChange={(e) => setUserEditData(prev => ({ ...prev, Mail: e.target.value }))}
-              placeholder="E-posta"
-              disabled={loading}
-            />
-            <input
-              type="password"
-              value={userEditData.Password}
-              onChange={(e) => setUserEditData(prev => ({ ...prev, Password: e.target.value }))}
-              placeholder="Yeni Şifre (opsiyonel)"
-              disabled={loading}
-            />
-            <div className="edit-buttons">
-              <button type="submit" disabled={loading} className="btn-save">
-                {loading ? "Güncelleniyor..." : "Kaydet"}
-              </button>
-              <button type="button" onClick={() => setShowUserEdit(false)} className="btn-cancel">
-                İptal
-              </button>
-            </div>
-          </form>
-        )}
-        
-        <button onClick={handleLogout} className="btn-logout">
-          Çıkış Yap
-        </button>
-      </div>
-      
-      <div className="content">
-        <div className="note-form-card">
-          <h2>Yeni Not Ekle</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Mahalle</label>
-              <select
-                value={formData.MahalleId || ""}
-                onChange={(e) => setFormData(prev => ({ ...prev, MahalleId: parseInt(e.target.value) }))}
-                required
-              >
-                <option value="">Mahalle seçin...</option>
-                {mahalleler.map((mahalle) => (
-                  <option key={mahalle.id} value={mahalle.id}>
-                    {mahalle.name} - {mahalle.ilce}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Not</label>
-              <textarea
-                rows="4"
-                required
-                value={formData.text}
-                onChange={(e) => setFormData(prev => ({ ...prev, text: e.target.value }))}
+          <button onClick={() => {
+            setUserEditData({
+              Id: currentUser.id,
+              Name: currentUser.name,
+              SurName: currentUser.surName,
+              Mail: currentUser.mail,
+              Password: ""
+            });
+            setShowUserEdit(true);
+          }} className="btn-edit">
+            Profilimi Düzenle
+          </button>
+
+          {showUserEdit && (
+            <form onSubmit={handleUserEditSubmit} className="edit-form">
+              <input
+                type="text"
+                value={userEditData.Name}
+                onChange={(e) => setUserEditData(prev => ({ ...prev, Name: e.target.value }))}
+                placeholder="Ad"
                 disabled={loading}
               />
-            </div>
-            {error && <div className="error-message">{error}</div>}
-            <div className="form-buttons">
-              <button type="submit" disabled={loading} className="facebook-login-btn">
-                {loading ? "Ekleniyor..." : "Not Ekle"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowNotes(!showNotes);
-                  if (!showNotes) loadNotes();
-                }}
-                className="facebook-create-account-btn"
-              >
-                {showNotes ? "Notları Gizle" : "Notları Göster"}
-              </button>
-            </div>
-          </form>
+              <input
+                type="text"
+                value={userEditData.SurName}
+                onChange={(e) => setUserEditData(prev => ({ ...prev, SurName: e.target.value }))}
+                placeholder="Soyad"
+                disabled={loading}
+              />
+              <input
+                type="email"
+                value={userEditData.Mail}
+                onChange={(e) => setUserEditData(prev => ({ ...prev, Mail: e.target.value }))}
+                placeholder="E-posta"
+                disabled={loading}
+              />
+              <input
+                type="password"
+                value={userEditData.Password}
+                onChange={(e) => setUserEditData(prev => ({ ...prev, Password: e.target.value }))}
+                placeholder="Yeni Şifre (opsiyonel)"
+                disabled={loading}
+              />
+              <div className="edit-buttons">
+                <button type="submit" disabled={loading} className="btn-save">
+                  {loading ? "Güncelleniyor..." : "Kaydet"}
+                </button>
+                <button type="button" onClick={() => setShowUserEdit(false)} className="btn-cancel">
+                  İptal
+                </button>
+              </div>
+            </form>
+          )}
+
+          <button onClick={handleLogout} className="btn-logout">
+            Çıkış Yap
+          </button>
         </div>
-        
-        {showNotes && (
-          <div className="notes-card">
-            <div className="notes-header">
-              <h3>Tüm Notlar ({filteredNotes.length})</h3>
-              <div className="filter-group">
-                <input
-                  type="text"
-                  placeholder="Mahalle ile filtrele..."
-                  value={mahalleFilter}
-                  onChange={(e) => setMahalleFilter(e.target.value)}
-                  className="filter-input"
+
+        <div className="content">
+          <div className="note-form-card">
+            <h2>Yeni Not Ekle</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Mahalle</label>
+                <select
+                  value={formData.MahalleId || ""}
+                  onChange={(e) => setFormData(prev => ({ ...prev, MahalleId: parseInt(e.target.value) }))}
+                  required
+                >
+                  <option value="">Mahalle seçin...</option>
+                  {mahalleler.map((mahalle) => (
+                    <option key={mahalle.id} value={mahalle.id}>
+                      {mahalle.name} - {mahalle.ilce}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Not</label>
+                <textarea
+                  rows="4"
+                  required
+                  value={formData.text}
+                  onChange={(e) => setFormData(prev => ({ ...prev, text: e.target.value }))}
+                  disabled={loading}
                 />
               </div>
-            </div>
-            
-            {filteredNotes.length > 0 ? (
-              filteredNotes.map((note) => {
-                const noteUserId = Number(note.userId);
-                const currentUserId = Number(currentUser?.id);
-                console.log('currentUser.id:', currentUserId, 'note.userId:', noteUserId, 'eşit mi:', noteUserId === currentUserId);
-                return (
-                  <div key={note.id} className="note-item">
-                    <div className="note-header">
-                      <div className="note-info">
-                        <div className="note-author">
-                          {note.username} {note.surName} ({note.mail})
+              {error && <div className="error-message">{error}</div>}
+              <div className="form-buttons">
+                <button type="submit" disabled={loading} className="facebook-login-btn">
+                  {loading ? "Ekleniyor..." : "Not Ekle"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNotes(!showNotes);
+                    if (!showNotes) loadNotes();
+                  }}
+                  className="facebook-create-account-btn"
+                >
+                  {showNotes ? "Notları Gizle" : "Notları Göster"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {showNotes && (
+            <div className="notes-card">
+              <div className="notes-header">
+                <h3>Tüm Notlar ({filteredNotes.length})</h3>
+                <div className="filter-group">
+                  <input
+                    type="text"
+                    placeholder="Mahalle ile filtrele..."
+                    value={mahalleFilter}
+                    onChange={(e) => setMahalleFilter(e.target.value)}
+                    className="filter-input"
+                  />
+                </div>
+              </div>
+
+              {filteredNotes.length > 0 ? (
+                filteredNotes.map((note) => {
+                  const noteUserId = Number(note.userId);
+                  const currentUserId = Number(currentUser?.id);
+                  console.log('currentUser.id:', currentUserId, 'note.userId:', noteUserId, 'eşit mi:', noteUserId === currentUserId);
+                  return (
+                    <div key={note.id} className="note-item">
+                      <div className="note-header">
+                        <div className="note-info">
+                          <div className="note-author">
+                            {note.username} {note.surName} ({note.mail})
+                          </div>
+                          <div className="note-location">
+                            📍 {getMahalleName(note.mahalleId)}
+                          </div>
+                          {note.dateTime && (
+                            <div className="note-date">
+                              {new Date(note.dateTime).toLocaleDateString('tr-TR')} - {new Date(note.dateTime).toLocaleTimeString('tr-TR')}
+                            </div>
+                          )}
                         </div>
-                        <div className="note-location">
-                          📍 {getMahalleName(note.mahalleId)}
-                        </div>
-                        {note.dateTime && (
-                          <div className="note-date">
-                            {new Date(note.dateTime).toLocaleDateString('tr-TR')} - {new Date(note.dateTime).toLocaleTimeString('tr-TR')}
+                        {noteUserId === currentUserId && (
+                          <div className="note-actions">
+                            <button
+                              onClick={() => {
+                                setEditNoteId(note.id);
+                                setEditNoteText(note.note);
+                              }}
+                              className="btn-edit-small"
+                            >
+                              Düzenle
+                            </button>
+                            <button
+                              onClick={() => handleDeleteNote(note.id)}
+                              className="btn-delete-small"
+                            >
+                              Sil
+                            </button>
                           </div>
                         )}
                       </div>
-                      {noteUserId === currentUserId && (
-                        <div className="note-actions">
-                          <button
-                            onClick={() => {
-                              setEditNoteId(note.id);
-                              setEditNoteText(note.note);
-                            }}
-                            className="btn-edit-small"
-                          >
-                            Düzenle
-                          </button>
-                          <button
-                            onClick={() => handleDeleteNote(note.id)}
-                            className="btn-delete-small"
-                          >
-                            Sil
-                          </button>
-                        </div>
+                      <div className="note-content">
+                        {note.note}
+                      </div>
+                      {editNoteId === note.id && (
+                        <form onSubmit={handleEditNoteSubmit} className="edit-note-form">
+                          <textarea
+                            value={editNoteText}
+                            onChange={(e) => setEditNoteText(e.target.value)}
+                            rows="3"
+                            disabled={loading}
+                          />
+                          <div className="edit-buttons">
+                            <button type="submit" disabled={loading} className="btn-save">
+                              {loading ? "Güncelleniyor..." : "Kaydet"}
+                            </button>
+                            <button type="button" onClick={() => setEditNoteId(null)} className="btn-cancel">
+                              İptal
+                            </button>
+                          </div>
+                        </form>
                       )}
                     </div>
-                    <div className="note-content">
-                      {note.note}
-                    </div>
-                    {editNoteId === note.id && (
-                      <form onSubmit={handleEditNoteSubmit} className="edit-note-form">
-                        <textarea
-                          value={editNoteText}
-                          onChange={(e) => setEditNoteText(e.target.value)}
-                          rows="3"
-                          disabled={loading}
-                        />
-                        <div className="edit-buttons">
-                          <button type="submit" disabled={loading} className="btn-save">
-                            {loading ? "Güncelleniyor..." : "Kaydet"}
-                          </button>
-                          <button type="button" onClick={() => setEditNoteId(null)} className="btn-cancel">
-                            İptal
-                          </button>
-                        </div>
-                      </form>
-                    )}
-                  </div>
-                );
-              })
-            ) : (
-              <p className="no-notes">Henüz not bulunmuyor.</p>
-            )}
-          </div>
-        )}
+                  );
+                })
+              ) : (
+                <p className="no-notes">Henüz not bulunmuyor.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
